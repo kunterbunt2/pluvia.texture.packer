@@ -1,0 +1,7 @@
+{
+duplicatePadding: false,
+paddingX: 1,
+paddingY: 1
+maxWidth: 4096,
+maxHeight: 4096,
+}
