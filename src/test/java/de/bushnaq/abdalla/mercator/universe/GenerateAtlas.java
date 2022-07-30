@@ -1,4 +1,4 @@
-package com.abdalla.bushnaq.mercator.universe;
+package de.bushnaq.abdalla.mercator.universe;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -6,8 +6,6 @@ import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
-import com.abdalla.bushnaq.pluvia.renderer.AtlasManager;
-import com.abdalla.bushnaq.pluvia.renderer.FontData;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglFiles;
@@ -26,6 +24,10 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import de.bushnaq.abdalla.pluvia.engine.AtlasManager;
+import de.bushnaq.abdalla.pluvia.engine.FontData;
+import de.bushnaq.abdalla.pluvia.launcher.DesktopContextFactory;
+
 public class GenerateAtlas implements ApplicationListener {
 	private static final int MAX_ITERATIONS = 20;
 
@@ -36,6 +38,7 @@ public class GenerateAtlas implements ApplicationListener {
 	@Override
 	public void create() {
 		final AtlasManager atlasManager = new AtlasManager();
+		atlasManager.init();
 		generateFonts(atlasManager.fontDataList);
 		createAtlas();
 		System.out.println("End");
@@ -44,9 +47,9 @@ public class GenerateAtlas implements ApplicationListener {
 	}
 
 	private void createAtlas() {
-		(new File("../pluvia/assets/atlas/atlas.png")).delete();
-		(new File("../pluvia/assets/atlas/atlas.atlas")).delete();
-		TexturePacker.process("src/main/resources/raw", "../pluvia/assets/atlas/", "atlas");
+		(new File("../pluvia/" + AtlasManager.getAssetsFolderName() + "/atlas/atlas.png")).delete();
+		(new File("../pluvia/" + AtlasManager.getAssetsFolderName() + "/atlas/atlas.atlas")).delete();
+		TexturePacker.process("src/main/resources/raw", AtlasManager.getAssetsFolderName() + "/atlas/", "atlas");
 	}
 
 	@Override
@@ -57,6 +60,8 @@ public class GenerateAtlas implements ApplicationListener {
 	public void generateAtlas() throws Exception {
 		Gdx.files = new LwjglFiles();
 		LwjglNativesLoader.load();
+		DesktopContextFactory	contextFactory	= new DesktopContextFactory();
+		contextFactory.create();
 		final Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		new Lwjgl3Application(this, config);
 	}
@@ -71,7 +76,7 @@ public class GenerateAtlas implements ApplicationListener {
 
 					final PixmapPacker packer = new PixmapPacker(pageSize, pageSize, Format.RGBA8888, 1, false);
 					{
-						final FreeTypeFontGenerator	generator	= new FreeTypeFontGenerator(Gdx.files.internal("../pluvia/" + fontData.file));
+						final FreeTypeFontGenerator	generator	= new FreeTypeFontGenerator(Gdx.files.internal( fontData.file));
 						final FreeTypeFontParameter	parameter	= new FreeTypeFontParameter();
 						parameter.size = (fontData.fontSize);
 						parameter.packer = packer;
